@@ -40,8 +40,12 @@ TEMPLATES_DIR = BASE_DIR / "templates"
 ENVIRONMENT = os.getenv("ENVIRONMENT", "development")
 IS_PRODUCTION = ENVIRONMENT.lower() == "production"
 
+# APP settings
+BACKEND_PORT = int(os.getenv("BACKEND_PORT", 3001))
+HOST = os.getenv("HOST", "::")
+
 # API and security settings
-API_KEY = os.getenv("VYOS_API_KEY", "Kode30050264")
+API_KEY = os.getenv("VYOS_API_KEY", "")
 VYOS_HOST = os.getenv("VYOS_HOST", "")
 VYOS_API_URL = os.getenv("VYOS_API_URL", "")
 CERT_PATH = os.getenv("CERT_PATH", "")
@@ -84,9 +88,9 @@ if VYOS_HOST and API_KEY:
                 print(f"DEBUG: Testing connection with API_KEY={API_KEY}")
                 success, error_msg = await vyos_client.test_connection()
                 if not success:
-                    print(f"❌ CRITICAL: Connection test failed - {error_msg}")
+                    print(f"CRITICAL: Connection test failed - {error_msg}")
             except Exception as e:
-                print(f"❌ CRITICAL: Connection test to VyOS router failed: {e}")
+                print(f"CRITICAL: Connection test to VyOS router failed: {e}")
                 
     except Exception as e:
         print(f"CRITICAL ERROR: Failed to initialize VyOS client: {e}")
@@ -105,7 +109,7 @@ app = FastAPI(
     version="1.0.0",
     docs_url=None if IS_PRODUCTION else "/docs",
     redoc_url=None if IS_PRODUCTION else "/redoc",
-    openapi_url=None if IS_PRODUCTION else "/openapi.json"
+    openapi_url="/openapi.json",
 )
 
 # Add CORS middleware
@@ -1183,4 +1187,4 @@ async def dashboard(request: Request):
     )
 
 if __name__ == "__main__":
-    uvicorn.run(app, host="0.0.0.0", port=3001, reload=True) 
+    uvicorn.run(app, host=HOST, port=BACKEND_PORT, reload=True) 
