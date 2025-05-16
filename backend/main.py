@@ -20,7 +20,7 @@ from starlette.middleware.sessions import SessionMiddleware
 from client import VyOSClient
 from utils import VyOSAPIError, merge_cidr_parts
 from cache import cache, cached, invalidate_cache
-from backend.auth import (
+from auth import (
     OIDC_ENABLED, get_current_user, get_login_url, exchange_code_for_token,
     create_session_cookie, get_logout_url, require_auth, require_admin, User
 )
