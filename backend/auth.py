@@ -207,7 +207,15 @@ async def create_session_cookie(id_token: str, access_token: str, expires_in: in
     # Decode token to get user info
     try:
         # For simplicity, we're not fully validating here since we just got it
-        payload = jwt.decode(id_token, options={"verify_signature": False})
+        payload = jwt.decode(
+            id_token,
+            key="",
+            algorithms=["RS256"],
+            options={
+                "verify_signature": False,
+                "verify_aud": False
+            }
+        )
         
         # Create session token
         session_data = {
